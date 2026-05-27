@@ -1602,9 +1602,7 @@ class GenericServer:
             # Microsoft Authentication required - Required since mslogin returns 200
             if (
                 self.authentication == "web"
-                and response.status_code == 200
-                and "<!-- Copyright (C) Microsoft Corporation" in response.text[0:100]
-                and "https://login.microsoftonline.com/" in response.text[0:2048]
+                and response.url.startswith("https://login.microsoftonline.com")
             ):
                 response.status_code = 401
 
