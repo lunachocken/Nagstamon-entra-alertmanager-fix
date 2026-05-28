@@ -106,6 +106,7 @@ if QT_FLAVOR == 'PyQt5':
         QAbstractTableModel, \
         QByteArray, \
         QDateTime, \
+        QEvent, \
         QModelIndex, \
         QObject, \
         QPoint, \
@@ -142,6 +143,7 @@ if QT_FLAVOR == 'PyQt5':
     from PyQt5.QtWidgets import QAbstractItemView, \
         QAction, \
         QApplication, \
+        QStyledItemDelegate, \
         QColorDialog, \
         QComboBox, \
         QDialog, \
@@ -247,6 +249,7 @@ elif QT_FLAVOR == 'PyQt6':
                               QAbstractTableModel,
                               QByteArray,
                               QDateTime,
+                              QEvent,
                               QModelIndex,
                               QObject,
                               QPoint,
@@ -283,6 +286,7 @@ elif QT_FLAVOR == 'PyQt6':
     from PyQt6.QtWebEngineWidgets import QWebEngineView as WebEngineView
     from PyQt6.QtWidgets import (QAbstractItemView,
                                  QApplication,
+                                 QStyledItemDelegate,
                                  QColorDialog,
                                  QComboBox,
                                  QDialog,

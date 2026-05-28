@@ -23,9 +23,9 @@ jobs:
         python-version: ['3.10', 3.11, 3.12, 3.13, 3.14]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     # docker login is needed for pushing the test image
-    - uses: docker/login-action@v3
+    - uses: docker/login-action@v4
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
@@ -50,9 +50,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       # docker login is needed for pushing the build image
-      - uses: docker/login-action@v3
+      - uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -65,7 +65,7 @@ jobs:
       - run: docker push ${{ env.cr_image }}-${{ github.job }}:${{ steps.dockerfile_hash.outputs.HASH }}
       # building in precompiled image makes them way faster instead of creating the build environment every time from scratch
       - run: /usr/bin/docker run -v ${{ github.workspace }}:/nagstamon -e DEB_BUILD_OPTIONS=nocheck ${{ env.cr_image }}-${{ github.job }}:${{ steps.dockerfile_hash.outputs.HASH }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           path: build/*.deb
           retention-days: 1
@@ -79,9 +79,9 @@ jobs:
       matrix:
         version: [ 42, 43, 44, 45 ]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       # docker login is needed for pushing the build image
-      - uses: docker/login-action@v3
+      - uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -94,7 +94,7 @@ jobs:
       - run: docker push ${{ env.cr_image }}-${{ github.job }}-${{ matrix.version }}:${{ steps.dockerfile_hash.outputs.HASH }}
       # building in precompiled image makes them way faster instead of creating the build environment every time from scratch
       - run: /usr/bin/docker run -v ${{ github.workspace }}:/nagstamon ${{ env.cr_image }}-${{ github.job }}-${{ matrix.version }}:${{ steps.dockerfile_hash.outputs.HASH }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           path: build/*.rpm
           retention-days: 1
@@ -105,9 +105,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       # docker login is needed for pushing the build image
-      - uses: docker/login-action@v3
+      - uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -120,7 +120,7 @@ jobs:
       - run: docker push ${{ env.cr_image }}-${{ github.job }}:${{ steps.dockerfile_hash.outputs.HASH }}
       # building in precompiled image makes them way faster instead of creating the build environment every time from scratch
       - run: /usr/bin/docker run -v ${{ github.workspace }}:/nagstamon ${{ env.cr_image }}-${{ github.job }}:${{ steps.dockerfile_hash.outputs.HASH }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           path: build/*.rpm
           retention-days: 1
@@ -132,9 +132,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       # docker login is needed for pushing the build image
-      - uses: docker/login-action@v3
+      - uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -149,7 +149,7 @@ jobs:
       - run: docker push ${{ env.cr_image }}-${{ github.job }}:${{ steps.dockerfile_hash.outputs.HASH }}
       # building in precompiled image makes them way faster instead of creating the build environment every time from scratch
       - run: /usr/bin/docker run --volume ${{ github.workspace }}:/nagstamon --env VERSION=${{ steps.app_version.outputs.VERSION }} ${{ env.cr_image }}-${{ github.job }}:${{ steps.dockerfile_hash.outputs.HASH }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           path: dist/*
           retention-days: 1
@@ -161,13 +161,13 @@ jobs:
     runs-on: macos-15-intel
     needs: test
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run : brew install create-dmg
       - run: pip3 install --no-warn-script-location --break-system-packages -r build/requirements/macos.txt
       - run: cd ${{ github.workspace }}/build; python3 build.py
         env:
           PYTHONPATH: ${{ github.workspace }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           path: build/dist/*.dmg
           retention-days: 1
@@ -178,13 +178,13 @@ jobs:
     runs-on: macos-14
     needs: test
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run : brew install create-dmg
       - run: pip3 install --no-warn-script-location --break-system-packages -r build/requirements/macos.txt
       - run: cd ${{ github.workspace }}/build; python3 build.py
         env:
           PYTHONPATH: ${{ github.workspace }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           path: build/dist/*.dmg
           retention-days: 1
@@ -196,8 +196,8 @@ jobs:
     runs-on: windows-2022
     needs: test
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: '${{ env.python_win_version }}'
           architecture: x86
@@ -211,7 +211,7 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}
           WIN_SIGNING_CERT_BASE64: ${{ secrets.SIGNING_CERT_BASE64 }}
           WIN_SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           path: |
             build/dist/*.zip
@@ -225,8 +225,8 @@ jobs:
     runs-on: windows-2022
     needs: test
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: '${{ env.python_win_version }}'
           architecture: x64
@@ -238,7 +238,7 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}
           WIN_SIGNING_CERT_BASE64: ${{ secrets.SIGNING_CERT_BASE64 }}
           WIN_SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           path: |
             build/dist/*.zip
@@ -252,8 +252,8 @@ jobs:
     runs-on: windows-2022
     needs: test
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: '${{ env.python_win_version }}'
           architecture: x64
@@ -265,7 +265,7 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}
           WIN_SIGNING_CERT_BASE64: ${{ secrets.SIGNING_CERT_BASE64 }}
           WIN_SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           path: |
             build/dist/*.zip
@@ -282,9 +282,9 @@ jobs:
       family: debian
     steps:
       # checkout to get Dockerfiles for steps.dockerfile_hash.outputs.HASH
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       # get binaries created by other jobs
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           pattern: 'debian*'
           path: artifact
@@ -333,15 +333,15 @@ jobs:
       version_latest: 41
     steps:
       # checkout to get Dockerfiles for steps.dockerfile_hash.outputs.HASH
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       # get binaries created by other jobs
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           pattern: 'fedora*'
           path: artifact
           merge-multiple: true
       # docker login is needed for pushing the build image
-      - uses: docker/login-action@v3
+      - uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -385,9 +385,9 @@ jobs:
       version: 9
     steps:
       # checkout to get Dockerfiles for steps.dockerfile_hash.outputs.HASH
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       # get binaries created by other jobs
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           pattern: 'rhel*'
           path: artifact
@@ -420,7 +420,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [repo-rpm-rhel]
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           pattern: '*'
           path: artifact
